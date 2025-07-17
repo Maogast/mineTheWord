@@ -1,4 +1,4 @@
-// src/app/page.tsx
+'use client'
 
 import dynamic from 'next/dynamic'
 import {
@@ -27,18 +27,18 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import PayButton from '@/components/PayButton'
 import HeroVideo from '@/components/HeroVideo'
 import StoryTimeline from '@/components/StoryTimeline'
+import AlumniShowcase from '@/components/AlumniShowcase'
+
 const TestimonialsCarousel = dynamic(
   () => import('@/components/TestimonialsCarousel'),
   { ssr: false }
 )
-import AlumniShowcase from '@/components/AlumniShowcase'
-import Image from 'next/image'
 
 export default function Home() {
   return (
     <>
-      {/* Full-screen hero video */}
-      <HeroVideo />
+      {/* Full-screen Lottie hero */}
+      <HeroVideo mode="lottie" />
 
       {/* Interactive “Our Journey” timeline */}
       <StoryTimeline />
@@ -49,7 +49,7 @@ export default function Home() {
       {/* Alumni Projects Grid */}
       <AlumniShowcase />
 
-      {/* The rest of your landing content */}
+      {/* Main Landing Content */}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         {/* Ownership & Mission Section */}
         <Box
@@ -68,10 +68,11 @@ export default function Home() {
             paragraph
             sx={{ maxWidth: 600, mx: 'auto', mb: 4 }}
           >
-            This isn’t just a course platform—it’s <strong>your</strong> academy.
-            You hold the keys to every lesson, every insight, every breakthrough.
-            Power through our curriculum, unlock your calling, supercharge your
-            faith, and advance your dreams.
+            This isn’t just a course platform—it’s{' '}
+            <strong>your</strong> academy. You hold the keys to every lesson,
+            every insight, every breakthrough. Power through our curriculum,
+            unlock your calling, supercharge your faith, and advance your
+            dreams.
           </Typography>
 
           <List
@@ -97,7 +98,6 @@ export default function Home() {
             ))}
           </List>
 
-          {/* Enrollment Buttons + Link */}
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
             spacing={2}
@@ -160,7 +160,6 @@ export default function Home() {
                 </Typography>
               </Paper>
             </Grid>
-
             <Grid item xs={12} md={4}>
               <Paper
                 elevation={3}
@@ -181,7 +180,6 @@ export default function Home() {
                 </Typography>
               </Paper>
             </Grid>
-
             <Grid item xs={12} md={4}>
               <Paper
                 elevation={3}
@@ -256,13 +254,7 @@ export default function Home() {
                     },
                   }}
                 >
-                  <Box
-                    sx={{
-                      mr: 3,
-                      color: 'primary.main',
-                      '& svg': { fontSize: 32 },
-                    }}
-                  >
+                  <Box sx={{ mr: 3, color: 'primary.main', '& svg': { fontSize: 32 } }}>
                     {item.icon}
                   </Box>
                   <Box>
@@ -299,11 +291,7 @@ export default function Home() {
           >
             Claim your power in the Word. Start your journey today!
           </Typography>
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={2}
-            justifyContent="center"
-          >
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
             <PayButton currency="KES" amount={29900}>
               Start – KSh 299
             </PayButton>

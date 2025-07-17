@@ -1,7 +1,26 @@
 // src/components/HeroVideo.tsx
-import { Box, Typography } from '@mui/material'
+'use client'
 
-export default function HeroVideo() {
+import { useState, useEffect } from 'react'
+import { Box, Typography } from '@mui/material'
+import Lottie from 'lottie-react'
+
+type HeroVideoProps = {
+  mode?: 'video' | 'lottie'
+}
+
+export default function HeroVideo({ mode = 'video' }: HeroVideoProps) {
+  const [animationData, setAnimationData] = useState<any>(null)
+
+  useEffect(() => {
+    if (mode === 'lottie') {
+      fetch('/lottie/bible-study.json')
+        .then((res) => res.json())
+        .then(setAnimationData)
+        .catch(console.error)
+    }
+  }, [mode])
+
   return (
     <Box
       sx={{
@@ -11,20 +30,34 @@ export default function HeroVideo() {
         overflow: 'hidden',
       }}
     >
-      <video
-        src="/videos/hero.mp4"      // ← put your 60s video here
-        autoPlay
-        muted
-        loop
-        playsInline
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-        }}
-      />
+      {mode === 'video' && (
+        <video
+          src="/videos/hero.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      )}
 
-      {/* Optional dark overlay for text contrast */}
+      {mode === 'lottie' && animationData && (
+        <Lottie
+          animationData={animationData}
+          loop
+          autoplay
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '120%',
+            height: '120%',
+            objectFit: 'cover',
+          }}
+        />
+      )}
+
+      {/* Overlay for contrast */}
       <Box
         sx={{
           position: 'absolute',
@@ -33,6 +66,7 @@ export default function HeroVideo() {
         }}
       />
 
+      {/* Centered Text */}
       <Box
         sx={{
           position: 'absolute',

@@ -1,68 +1,116 @@
-// src/components/Navbar.tsx
+'use client'
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { AppBar, Toolbar, Box, Button } from '@mui/material'
+import { useState } from 'react'
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  Button,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+} from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import { courses as staticCourses } from '@/data/courses'
+import RegistrationForm from './RegistrationForm'
+
+type SimpleCourse = { id: string; title: string }
 
 export default function Navbar() {
-  return (
-    <AppBar
-      position="fixed"
-      color="primary"
-      elevation={1}
-      sx={{ top: 0, zIndex: (theme) => theme.zIndex.appBar }}
-    >
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
-        {/* Logo on the left */}
-        <Link href="/" passHref>
-          <Box
-            component="a"
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              textDecoration: 'none',
-            }}
-          >
-            <Image
-              src="/logo.png"
-              alt="Mine the Word Academy Logo"
-              width={40}
-              height={40}
-            />
-          </Box>
-        </Link>
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [openReg, setOpenReg] = useState(false)
+  const openMenu = Boolean(anchorEl)
 
-        {/* Navigation links + Donate CTA */}
-        <Box>
-          {[
-            { label: 'Home', href: '/' },
-            { label: 'Courses', href: '/courses' },
-            { label: 'Instructors', href: '/instructors' },
-            { label: 'Dashboard', href: '/dashboard' },
-          ].map((item) => (
+  const handleMenuOpen = (e: React.MouseEvent<HTMLButtonElement>) =>
+    setAnchorEl(e.currentTarget)
+  const handleMenuClose = () => setAnchorEl(null)
+
+  return (
+    <>
+      <AppBar position="fixed" color="primary" elevation={1} sx={{ zIndex: (t) => t.zIndex.appBar }}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          {/* Logo */}
+          <Box component={Link} href="/" sx={{ display: 'flex', alignItems: 'center', color: 'inherit' }}>
+            <Image src="/logo.png" width={40} height={40} alt="Logo" />
+          </Box>
+
+          {/* Links */}
+          <Box>
+            <Button color="inherit" onClick={handleMenuOpen} sx={{ mx: 1 }}>
+              Courses
+            </Button>
+            <Menu anchorEl={anchorEl} open={openMenu} onClose={handleMenuClose}>
+              {staticCourses.map((c) => (
+                <MenuItem
+                  key={c.id}
+                  component={Link}
+                  href={`/courses/${c.id}`}
+                  onClick={handleMenuClose}
+                >
+                  {c.title}
+                </MenuItem>
+              ))}
+            </Menu>
+
+            {[
+              { label: 'Home', href: '/' },
+              { label: 'Instructors', href: '/instructors' },
+              { label: 'Dashboard', href: '/dashboard' },
+            ].map((item) => (
+              <Button
+                key={item.href}
+                component={Link}
+                href={item.href}
+                color="inherit"
+                sx={{ mx: 1 }}
+              >
+                {item.label}
+              </Button>
+            ))}
+
+            <Button component={Link} href="/donate" color="secondary" variant="contained" sx={{ ml: 2 }}>
+              Donate
+            </Button>
+
+            {/* Register Button */}
             <Button
-              key={item.href}
-              component={Link}
-              href={item.href}
               color="inherit"
+              onClick={() => setOpenReg(true)}
               sx={{ textTransform: 'none', mx: 1 }}
             >
-              {item.label}
+              Register
             </Button>
-          ))}
+          </Box>
+        </Toolbar>
+      </AppBar>
 
-          {/* Donate button */}
-          <Button
-            component={Link}
-            href="/donate"
-            color="secondary"
-            variant="contained"
-            sx={{ textTransform: 'none', ml: 2 }}
+      {/* Registration Dialog */}
+      <Dialog
+        open={openReg}
+        onClose={() => setOpenReg(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }}>
+          Student Registration
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenReg(false)}
+            sx={{ position: 'absolute', right: 8, top: 8 }}
           >
-            Donate
-          </Button>
-        </Box>
-      </Toolbar>
-    </AppBar>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent dividers>
+          <RegistrationForm />
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
