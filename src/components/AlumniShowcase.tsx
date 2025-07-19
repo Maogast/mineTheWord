@@ -8,7 +8,7 @@ import {
   CardContent,
   Button,
 } from '@mui/material'
-import { alumni } from '@/data/alumni'
+import { alumni } from '~/data/alumni'
 
 export default function AlumniShowcase() {
   return (

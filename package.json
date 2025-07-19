@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "seed:providers": "node scripts/seedProviders.js",
+    "seed:all": "node scripts/seedAll.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -21,7 +23,9 @@
     "framer-motion": "^12.23.6",
     "lottie-react": "^2.4.1",
     "next": "^14.0.3",
+    "nodemailer": "^7.0.5",
     "react": "^18.2.0",
+    "react-circular-progressbar": "^2.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.60.0",
     "react-slick": "^0.30.3",
@@ -33,9 +37,11 @@
   "devDependencies": {
     "@babel/core": "^7.28.0",
     "@types/node": "^20.19.4",
+    "@types/nodemailer": "^6.4.17",
     "@types/react": "^18.2.7",
     "@types/react-slick": "^0.23.13",
     "babel-loader": "^10.0.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "typescript": "^5.8.3"
   }
 }

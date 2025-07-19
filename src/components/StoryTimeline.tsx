@@ -1,6 +1,6 @@
 // src/components/StoryTimeline.tsx
 import { Box, Tooltip, Typography } from '@mui/material'
-import { timelineData } from '@/data/timelineData'
+import { timelineData } from '~/data/timelineData'
 
 export default function StoryTimeline() {
   return (

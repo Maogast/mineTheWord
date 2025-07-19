@@ -3,7 +3,7 @@
 
 import dynamic from 'next/dynamic'
 import { Box, Card, CardContent, Avatar, Typography } from '@mui/material'
-import { testimonials } from '@/data/testimonials'
+import { testimonials } from '~/data/testimonials'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 

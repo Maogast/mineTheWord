@@ -3,9 +3,9 @@
 import Head from 'next/head'
 import { ThemeProvider, CssBaseline, Box, Toolbar } from '@mui/material'
 import theme, { inter, fira } from '../theme'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import ScrollTop from '@/components/ScrollTop'
+import Navbar from '~/components/Navbar'
+import Footer from '~/components/Footer'
+import ScrollTop from '~/components/ScrollTop'
 import './globals.css'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -2,8 +2,8 @@
 'use client'
 
 import { Container, Box, Typography, Divider } from '@mui/material'
-import DonationForm from '@/components/DonationForm'
-import ImpactStats from '@/components/ImpactStats'
+import DonationForm from '~/components/DonationForm'
+import ImpactStats from '~/components/ImpactStats'
 
 export default function DonatePage() {
   return (

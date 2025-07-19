@@ -24,13 +24,13 @@ import {
 } from '@mui/icons-material'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import PayButton from '@/components/PayButton'
-import HeroVideo from '@/components/HeroVideo'
-import StoryTimeline from '@/components/StoryTimeline'
-import AlumniShowcase from '@/components/AlumniShowcase'
+import PayButton from '~/components/PayButton'
+import HeroVideo from '~/components/HeroVideo'
+import StoryTimeline from '~/components/StoryTimeline'
+import AlumniShowcase from '~/components/AlumniShowcase'
 
 const TestimonialsCarousel = dynamic(
-  () => import('@/components/TestimonialsCarousel'),
+  () => import('~/components/TestimonialsCarousel'),
   { ssr: false }
 )
 

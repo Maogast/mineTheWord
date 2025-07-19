@@ -64,13 +64,30 @@ export default function RegistrationForm() {
 
   const prevStep = () => setActiveStep((s) => s - 1)
 
-  // 3. Submit handler
-  const onSubmit: SubmitHandler<FormData> = async (data) => {
-    // simulate network
-    await new Promise((r) => setTimeout(r, 1500))
-    console.log('Registered:', data)
+  // …inside RegistrationForm…
+
+// 3. Submit handler
+const onSubmit: SubmitHandler<FormData> = async (data) => {
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+    const json = await res.json()
+
+    if (!res.ok || !json.success) {
+      throw new Error(json.error || 'Registration failed')
+    }
+
+    console.log('Registered with Firestore ID:', json.id)
     setSubmitted(true)
+  } catch (err: any) {
+    alert(err.message)
   }
+}
+
+// …rest of your component stays the same…
 
   // 4. Success screen
   if (submitted) {

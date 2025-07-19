@@ -1,15 +1,22 @@
-// functions/index.ts
-
-import { initializeApp } from 'firebase-admin/app'
-import { getFirestore, FieldValue } from 'firebase-admin/firestore'
+// 0. Imports
 import * as functions from 'firebase-functions'
+import { initializeApp, cert } from 'firebase-admin/app'
+import { getFirestore, FieldValue } from 'firebase-admin/firestore'
 import Stripe from 'stripe'
 
-// 1) Initialize Firebase Admin
-initializeApp()
+// 1) Load service account JSON
+//    Adjust the path if you placed the JSON somewhere else.
+const serviceAccount = require('../serviceAccountKey.json')
+
+// 2) Initialize Firebase Admin with explicit credentials
+initializeApp({
+  credential: cert(serviceAccount),
+  // Optional: if you need RTDB:
+  // databaseURL: "https://mine-the-word-academy.firebaseio.com"
+})
 const db = getFirestore()
 
-// 2) Initialize Stripe (secret and webhook set via `firebase functions:config:set`)
+// 3) Initialize Stripe
 const stripe = new Stripe(functions.config().stripe.secret_key, {
   apiVersion: '2025-06-30.basil',
 })

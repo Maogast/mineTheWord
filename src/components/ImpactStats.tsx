@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react'
 import { Box, Typography, Grid, Paper } from '@mui/material'
 import { collection, getDocs } from 'firebase/firestore'
-import { db } from '@/lib/firebase'
+import { db } from '~/lib/firebaseClient'
 
 export default function ImpactStats() {
   const [total, setTotal] = useState(0)

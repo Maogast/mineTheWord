@@ -1,26 +1,15 @@
 // next.config.js
+const path = require('path')
 
-/**
- * @type {import('next').NextConfig}
- */
-const nextConfig = {
+/** @type {import('next').NextConfig} **/
+module.exports = {
   reactStrictMode: true,
   swcMinify: true,
+  transpilePackages: ['undici'],
 
   webpack(config) {
-    // Transpile undici so Next.js can handle its private-field syntax
-    config.module.rules.push({
-      test: /node_modules[/\\]undici/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          presets: ['next/babel'],
-        },
-      },
-    })
-
+    // Teach webpack that "~/" is your "src" folder
+    config.resolve.alias['~'] = path.resolve(__dirname, 'src')
     return config
   },
 }
-
-module.exports = nextConfig

@@ -43,10 +43,10 @@ const instructors: Instructor[] = [
     twitter: 'https://twitter.com/janesmith',
   },
   {
-    name: 'Michael Lee',
+    name: 'Pastor Wamalika',
     title: 'Curriculum Developer',
-    image: '/instructors/michael-lee.jpg',
-    bio: 'Michael crafts our superhero-style learning paths. With a background in instructional design, he ensures each lesson helps you level up your faith and skills.',
+    image: '/instructors/wamalika.jpg',
+    bio: 'Wamalika crafts our superhero-style learning paths. With a background in instructional design, he ensures each lesson helps you level up your faith and skills.',
     linkedIn: 'https://linkedin.com/in/michaellee',
     twitter: 'https://twitter.com/michaellee',
   },
