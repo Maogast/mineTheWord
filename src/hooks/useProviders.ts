@@ -1,22 +1,45 @@
-// src/hooks/useProviders.ts
+'use client'
+
 import { useState, useEffect } from 'react'
-import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { db } from '~/lib/firebaseClient'
+import { collection, onSnapshot, DocumentData } from 'firebase/firestore'
 
 export interface Provider {
-  id: string
+  id: string          // Firestore doc ID (slug)
+  userId: string      // Firebase Auth UID
   displayName: string
   type: string
-  photoURL?: string
+  subscribed: boolean
+  photoURL: string
+  bio: string
+  email?: string
 }
 
-export function useProviders() {
-  const [list, setList] = useState<Provider[]>([])
+/**
+ * Streams your list of providers.
+ */
+export function useProviders(): Provider[] {
+  const [providers, setProviders] = useState<Provider[]>([])
+
   useEffect(() => {
-    const q = query(collection(db, 'providers'), where('subscribed','==',true))
-    return onSnapshot(q, snap => 
-      setList(snap.docs.map(d => ({ id: d.id, ...d.data() }) as Provider))
-    )
+    const unsub = onSnapshot(collection(db, 'providers'), (snap) => {
+      const arr = snap.docs.map((d) => {
+        const data = d.data() as DocumentData
+        return {
+          id: d.id,
+          userId: data.userId,
+          displayName: data.displayName,
+          type: data.type,
+          subscribed: data.subscribed,
+          photoURL: data.photoURL,
+          bio: data.bio,
+          email: data.email,
+        } as Provider
+      })
+      setProviders(arr)
+    })
+    return () => unsub()
   }, [])
-  return list
+
+  return providers
 }

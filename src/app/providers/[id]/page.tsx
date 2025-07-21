@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { auth } from '~/lib/firebaseClient'
 import {
   CircularProgress,
   Box,
@@ -15,18 +16,18 @@ import {
   Alert,
 } from '@mui/material'
 import { useProviders, Provider } from '~/hooks/useProviders'
-import { createBooking } from '~/hooks/useBookings'
+import { createBooking, NewBookingData } from '~/hooks/useBookings'
 
 const steps = ['Select Date & Time', 'Your Info', 'Confirm']
 
 export default function ProviderDetail({ params }: { params: { id: string } }) {
   const router = useRouter()
+  const user = auth.currentUser
 
-  // load list and find provider
   const providers = useProviders()
   const [provider, setProvider] = useState<Provider | null>(null)
 
-  // form state
+  // Form state
   const [activeStep, setStep] = useState(0)
   const [date, setDate] = useState('')
   const [time, setTime] = useState('')
@@ -37,13 +38,11 @@ export default function ProviderDetail({ params }: { params: { id: string } }) {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (providers.length) {
-      const found = providers.find((p) => p.id === params.id) || null
-      setProvider(found)
+    if (providers.length > 0) {
+      setProvider(providers.find((p) => p.id === params.id) ?? null)
     }
   }, [providers, params.id])
 
-  // loading / not found
   if (provider === null) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
@@ -65,20 +64,34 @@ export default function ProviderDetail({ params }: { params: { id: string } }) {
 
     try {
       const dateTime = new Date(`${date}T${time}:00`)
-
-      // only pass fields that have values
-      const data: any = {
-        providerId: provider.id,
+      const bookingId = await createBooking({
+        providerId: provider.userId,
         requesterName: name,
         requesterEmail: email,
+        requesterPhone: phone || undefined,
         date: dateTime,
         startTime: time,
-      }
-      if (phone) data.requesterPhone = phone
+      } as NewBookingData)
 
-      await createBooking(data)
+      // send acknowledgment email
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: email,
+          subject: 'Booking Received',
+          text: `Hi ${name},
+
+We received your booking request for ${provider.displayName} on ${date} at ${time}. You’ll hear back once it’s confirmed!
+
+Blessings,
+Mine The Word Academy`,
+        }),
+      })
+
       router.push('/thank-you')
     } catch (err: any) {
+      console.error('Booking error:', err)
       setError(err.message || 'Booking failed')
       setSubmitting(false)
     }
@@ -98,7 +111,6 @@ export default function ProviderDetail({ params }: { params: { id: string } }) {
         ))}
       </Stepper>
 
-      {/* Step 1 */}
       {activeStep === 0 && (
         <Box>
           <TextField
@@ -121,7 +133,6 @@ export default function ProviderDetail({ params }: { params: { id: string } }) {
         </Box>
       )}
 
-      {/* Step 2 */}
       {activeStep === 1 && (
         <Box>
           <TextField
@@ -148,29 +159,28 @@ export default function ProviderDetail({ params }: { params: { id: string } }) {
         </Box>
       )}
 
-      {/* Step 3 */}
       {activeStep === 2 && (
         <Box>
           <Typography>
             You are booking {provider.displayName} on {date} at {time}.
           </Typography>
-          <Typography>Contact: {name}, {email}{phone && `, ${phone}`}</Typography>
+          <Typography>
+            Contact: {name}, {email}
+            {phone && `, ${phone}`}
+          </Typography>
         </Box>
       )}
 
-      {/* Error */}
       {error && (
         <Alert severity="error" sx={{ mt: 2 }}>
           {error}
         </Alert>
       )}
 
-      {/* Nav Buttons */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
         <Button disabled={activeStep === 0} onClick={handleBack}>
           Back
         </Button>
-
         {activeStep < steps.length - 1 ? (
           <Button variant="contained" onClick={handleNext}>
             Next

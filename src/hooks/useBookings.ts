@@ -8,8 +8,6 @@ import {
   where,
   onSnapshot,
   addDoc,
-  updateDoc,
-  doc,
   Timestamp,
   DocumentData,
 } from 'firebase/firestore'
@@ -28,16 +26,19 @@ export interface Booking {
   updatedAt: Timestamp
 }
 
-/**
- * Omit Firestore‐managed fields and allow `date` as Date or Timestamp.
- */
-export type NewBookingData = Omit<
-  Booking,
-  'id' | 'status' | 'createdAt' | 'updatedAt' | 'date'
-> & {
+export type NewBookingData = {
+  providerId: string
+  requesterName: string
+  requesterEmail: string
+  requesterPhone?: string
   date: Date | Timestamp
+  startTime: string
 }
 
+/**
+ * Streams “Incoming” (asProvider=true) or “Outgoing”
+ * (asProvider=false) bookings for the current signed-in user.
+ */
 export function useMyBookings(asProvider = false): Booking[] {
   const [bookings, setBookings] = useState<Booking[]>([])
 
@@ -74,31 +75,53 @@ export function useMyBookings(asProvider = false): Booking[] {
   return bookings
 }
 
+/**
+ * Creates a booking. Any visitor can call.
+ * If signed in, attaches their UID as `requesterId`.
+ */
 export async function createBooking(data: NewBookingData): Promise<string> {
+  // Convert date to Firestore Timestamp
   const dateTs =
     data.date instanceof Date ? Timestamp.fromDate(data.date) : data.date
-
   const now = Timestamp.now()
+
   const payload: any = {
-    ...data,
+    providerId: data.providerId,
+    requesterName: data.requesterName,
+    requesterEmail: data.requesterEmail,
     date: dateTs,
+    startTime: data.startTime,
     status: 'pending',
     createdAt: now,
     updatedAt: now,
   }
+  if (data.requesterPhone) {
+    payload.requesterPhone = data.requesterPhone
+  }
 
-  // remove undefined fields so Firestore won’t reject
-  if (!data.requesterId) delete payload.requesterId
-  if (!data.requesterPhone) delete payload.requesterPhone
+  // If a user is signed in, tag them
+  const uid = auth.currentUser?.uid
+  if (uid) {
+    payload.requesterId = uid
+  }
 
   const docRef = await addDoc(collection(db, 'bookings'), payload)
   return docRef.id
 }
 
+/**
+ * Updates booking status via your Next.js API route,
+ * which also sends the approval/decline email.
+ */
 export async function updateBookingStatus(
   bookingId: string,
   status: 'confirmed' | 'declined'
 ): Promise<void> {
-  const ref = doc(db, 'bookings', bookingId)
-  await updateDoc(ref, { status, updatedAt: Timestamp.now() })
+  const res = await fetch('/api/update-booking', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ bookingId, status }),
+  })
+  const json = await res.json()
+  if (!json.success) throw new Error(json.error || 'Unknown API error')
 }

@@ -1,4 +1,3 @@
-// tsconfig.json
 {
   "compilerOptions": {
     "target": "es5",
@@ -18,6 +17,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+
     // ① Base URL is project root
     "baseUrl": ".",
     // ② Map "~/*" → "src/*"
@@ -26,6 +26,7 @@
         "src/*"
       ]
     },
+
     "plugins": [
       {
         "name": "next"

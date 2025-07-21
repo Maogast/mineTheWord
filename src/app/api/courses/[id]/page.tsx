@@ -13,8 +13,8 @@ import {
   ListItemText,
 } from '@mui/material'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
-import PayButton from '@/components/PayButton'
-import { courses, type Course } from '@/data/courses'
+import PayButton from '~/components/PayButton'
+import { courses, type Course } from '~/data/courses'
 
 interface Props {
   params: { id: string }

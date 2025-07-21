@@ -1,20 +1,29 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
     match /providers/{id} {
       allow read: if resource.data.subscribed == true;
       allow write: if request.auth.uid == request.resource.data.userId;
     }
+
     match /bookings/{id} {
+      // Anyone (visitor or signed-in) can create
       allow create: if true;
+
+      // Only provider or requester (if signed in) can read
       allow read: if request.auth.uid in [
         resource.data.providerId,
         resource.data.requesterId
       ];
+
+      // Provider can update status
       allow update: if request.auth.uid == resource.data.providerId
-                     && request.resource.data.keys().hasOnly(
-                           ['status','updatedAt']
-                        );
+                  && request.resource.data.keys().hasOnly(['status','updatedAt']);
+
+      // Provider can delete their own booking
+      allow delete: if request.auth.uid == resource.data.providerId;
     }
+
   }
 }

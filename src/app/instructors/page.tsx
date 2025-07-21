@@ -35,7 +35,7 @@ const instructors: Instructor[] = [
     twitter: 'https://twitter.com/johndoe',
   },
   {
-    name: 'Villy Romenia',
+    name: ' Villi Costescu',
     title: 'Senior Educator',
     image: '/instructors/jane-smith.jpg',
     bio: 'Villy specializes in interactive pedagogy and community engagement. She designs courses that turn complex concepts into everyday applications.',
