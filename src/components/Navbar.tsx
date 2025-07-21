@@ -26,7 +26,7 @@ import { courses as staticCourses } from '~/data/courses'
 
 // Left‐side primary links
 const mainLinks = [{ href: '/', label: 'Home' }]
-// Providers dropdown (holds All Providers & My Bookings)
+// Providers dropdown
 const providersItems = [
   { href: '/providers', label: 'All Providers' },
   { href: '/my-bookings', label: 'My Bookings' },
@@ -45,22 +45,23 @@ const aboutItems = [
 export default function Navbar() {
   const theme = useTheme()
 
-  // Menu anchors
+  // anchors
   const [anchorCourses, setAnchorCourses] = useState<HTMLElement | null>(null)
   const [anchorProviders, setAnchorProviders] = useState<HTMLElement | null>(null)
   const [anchorAbout, setAnchorAbout] = useState<HTMLElement | null>(null)
+
   const openCourses = Boolean(anchorCourses)
   const openProviders = Boolean(anchorProviders)
   const openAbout = Boolean(anchorAbout)
 
-  // Registration Dialog
+  // registration dialog
   const [openReg, setOpenReg] = useState(false)
 
   return (
     <>
       <AppBar position="fixed" color="primary" elevation={1} sx={{ zIndex: t => t.zIndex.appBar }}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
-          {/* LEFT: Logo + Home + Providers menu + Dashboard + About menu */}
+          {/* LEFT: Logo + Home + Providers + Dashboard + Team + About */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Logo */}
             <Box
@@ -77,11 +78,7 @@ export default function Navbar() {
             ))}
 
             {/* Providers menu */}
-            <Button
-              onClick={e => setAnchorProviders(e.currentTarget)}
-              color="inherit"
-              sx={{ mx: 1 }}
-            >
+            <Button onClick={e => setAnchorProviders(e.currentTarget)} color="inherit" sx={{ mx: 1 }}>
               Providers
             </Button>
             <Menu
@@ -102,17 +99,20 @@ export default function Navbar() {
             </Menu>
 
             {/* Dashboard */}
-            <AnimatedNavLink href={dashboardLink.href} label={dashboardLink.label} />
+            <Box sx={{ mx: 1 }}>
+              <AnimatedNavLink href={dashboardLink.href} label={dashboardLink.label} />
+            </Box>
+
+            {/* Team */}
+            <Box sx={{ mx: 1 }}>
+              <AnimatedNavLink href="/team" label="Team" />
+            </Box>
 
             {/* About menu */}
             <Button onClick={e => setAnchorAbout(e.currentTarget)} color="inherit" sx={{ mx: 1 }}>
               About
             </Button>
-            <Menu
-              anchorEl={anchorAbout}
-              open={openAbout}
-              onClose={() => setAnchorAbout(null)}
-            >
+            <Menu anchorEl={anchorAbout} open={openAbout} onClose={() => setAnchorAbout(null)}>
               {aboutItems.map(item => (
                 <MenuItem
                   key={item.href}
@@ -126,7 +126,7 @@ export default function Navbar() {
             </Menu>
           </Box>
 
-          {/* RIGHT: Courses + Search + Donate + Glowing Register */}
+          {/* RIGHT: Courses + Search + Donate + Register */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Courses menu */}
             <Button onClick={e => setAnchorCourses(e.currentTarget)} color="inherit" sx={{ mr: 2 }}>
@@ -149,7 +149,7 @@ export default function Navbar() {
               ))}
             </Menu>
 
-            {/* Search Autocomplete */}
+            {/* Search */}
             <SearchAutocomplete />
 
             {/* Donate */}
@@ -165,7 +165,7 @@ export default function Navbar() {
               </Button>
             </motion.div>
 
-            {/* Glowing Register */}
+            {/* Register */}
             <motion.div
               animate={{
                 scale: [1, 1.05, 1],
@@ -175,19 +175,10 @@ export default function Navbar() {
                   `0 0 0 0 ${theme.palette.secondary.main}55`,
                 ],
               }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                repeatType: 'loop',
-                ease: 'easeInOut',
-              }}
+              transition={{ duration: 2, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' }}
               whileHover={{ scale: 1.1 }}
             >
-              <Button
-                onClick={() => setOpenReg(true)}
-                color="inherit"
-                sx={{ textTransform: 'none' }}
-              >
+              <Button onClick={() => setOpenReg(true)} color="inherit" sx={{ textTransform: 'none' }}>
                 Register
               </Button>
             </motion.div>
@@ -195,10 +186,10 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* Spacer so page content isn’t hidden under AppBar */}
+      {/* Spacer */}
       <ToolbarSpacer />
 
-      {/* Student Registration Dialog */}
+      {/* Registration Dialog */}
       <Dialog open={openReg} onClose={() => setOpenReg(false)} fullWidth maxWidth="sm">
         <DialogTitle sx={{ m: 0, p: 2 }}>
           Student Registration
