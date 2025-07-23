@@ -24,37 +24,41 @@ import SearchAutocomplete from './SearchAutocomplete'
 import RegistrationForm from './RegistrationForm'
 import { courses as staticCourses } from '~/data/courses'
 
-// Left‐side primary links
+// Primary links
 const mainLinks = [{ href: '/', label: 'Home' }]
-// Providers dropdown
+
+// Providers dropdown items
 const providersItems = [
   { href: '/providers', label: 'All Providers' },
   { href: '/my-bookings', label: 'My Bookings' },
 ]
+
 // Dashboard link
 const dashboardLink = { href: '/dashboard', label: 'Dashboard' }
-// About dropdown
+
+// About dropdown (no more 'Instructors')
 const aboutItems = [
   { href: '/mission', label: 'Mission' },
   { href: '/vision', label: 'Vision' },
   { href: '/values', label: 'Values' },
   { href: '/history', label: 'History' },
-  { href: '/instructors', label: 'Instructors' },
 ]
 
 export default function Navbar() {
   const theme = useTheme()
 
-  // anchors
+  // Menu anchors
   const [anchorCourses, setAnchorCourses] = useState<HTMLElement | null>(null)
   const [anchorProviders, setAnchorProviders] = useState<HTMLElement | null>(null)
+  const [anchorTeam, setAnchorTeam] = useState<HTMLElement | null>(null)
   const [anchorAbout, setAnchorAbout] = useState<HTMLElement | null>(null)
 
   const openCourses = Boolean(anchorCourses)
   const openProviders = Boolean(anchorProviders)
+  const openTeam = Boolean(anchorTeam)
   const openAbout = Boolean(anchorAbout)
 
-  // registration dialog
+  // Registration dialog
   const [openReg, setOpenReg] = useState(false)
 
   return (
@@ -64,11 +68,7 @@ export default function Navbar() {
           {/* LEFT: Logo + Home + Providers + Dashboard + Team + About */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Logo */}
-            <Box
-              component={Link}
-              href="/"
-              sx={{ display: 'flex', alignItems: 'center', color: 'inherit', mr: 2 }}
-            >
+            <Box component={Link} href="/" sx={{ display: 'flex', alignItems: 'center', color: 'inherit', mr: 2 }}>
               <Image src="/logo.png" width={40} height={40} alt="Logo" />
             </Box>
 
@@ -103,10 +103,18 @@ export default function Navbar() {
               <AnimatedNavLink href={dashboardLink.href} label={dashboardLink.label} />
             </Box>
 
-            {/* Team */}
-            <Box sx={{ mx: 1 }}>
-              <AnimatedNavLink href="/team" label="Team" />
-            </Box>
+            {/* Team dropdown */}
+            <Button onClick={e => setAnchorTeam(e.currentTarget)} color="inherit" sx={{ mx: 1 }}>
+              Team
+            </Button>
+            <Menu anchorEl={anchorTeam} open={openTeam} onClose={() => setAnchorTeam(null)}>
+              <MenuItem component={Link} href="/team" onClick={() => setAnchorTeam(null)}>
+                Team Members
+              </MenuItem>
+              <MenuItem component={Link} href="/instructors" onClick={() => setAnchorTeam(null)}>
+                Instructors
+              </MenuItem>
+            </Menu>
 
             {/* About menu */}
             <Button onClick={e => setAnchorAbout(e.currentTarget)} color="inherit" sx={{ mx: 1 }}>
@@ -175,7 +183,7 @@ export default function Navbar() {
                   `0 0 0 0 ${theme.palette.secondary.main}55`,
                 ],
               }}
-              transition={{ duration: 2, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               whileHover={{ scale: 1.1 }}
             >
               <Button onClick={() => setOpenReg(true)} color="inherit" sx={{ textTransform: 'none' }}>
@@ -186,7 +194,7 @@ export default function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* Spacer */}
+      {/* Toolbar spacer */}
       <ToolbarSpacer />
 
       {/* Registration Dialog */}

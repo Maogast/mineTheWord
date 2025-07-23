@@ -21,7 +21,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 
-// 1. Validation schema
+// Validation schema
 const schema = yup.object({
   fullName: yup.string().required('Full name is required'),
   email: yup.string().email('Invalid email').required('Email is required'),
@@ -54,42 +54,29 @@ export default function RegistrationForm() {
     },
   })
 
-  // 2. Step navigation
   const nextStep = async () => {
-    const valid = await trigger(activeStep === 0
-      ? ['fullName', 'email', 'phone']
-      : ['course'])
+    const valid = await trigger(
+      activeStep === 0 ? ['fullName', 'email', 'phone'] : ['course']
+    )
     if (valid) setActiveStep((s) => s + 1)
   }
-
   const prevStep = () => setActiveStep((s) => s - 1)
 
-  // …inside RegistrationForm…
-
-// 3. Submit handler
-const onSubmit: SubmitHandler<FormData> = async (data) => {
-  try {
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-    const json = await res.json()
-
-    if (!res.ok || !json.success) {
-      throw new Error(json.error || 'Registration failed')
+  const onSubmit: SubmitHandler<FormData> = async (data) => {
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      const json = await res.json()
+      if (!res.ok || !json.success) throw new Error(json.error || 'Registration failed')
+      setSubmitted(true)
+    } catch (err: any) {
+      alert(err.message)
     }
-
-    console.log('Registered with Firestore ID:', json.id)
-    setSubmitted(true)
-  } catch (err: any) {
-    alert(err.message)
   }
-}
 
-// …rest of your component stays the same…
-
-  // 4. Success screen
   if (submitted) {
     return (
       <Paper elevation={4} sx={{ p: 6, textAlign: 'center' }}>
@@ -98,7 +85,7 @@ const onSubmit: SubmitHandler<FormData> = async (data) => {
           Registration Complete!
         </Typography>
         <Typography color="text.secondary" mt={1}>
-          We’ve sent you a confirmation email—see you in class.  
+          We’ve sent you a confirmation email—see you in class.
         </Typography>
       </Paper>
     )
@@ -139,7 +126,6 @@ const onSubmit: SubmitHandler<FormData> = async (data) => {
                     )}
                   />
                 </Grid>
-
                 <Grid item xs={12} sm={6}>
                   <Controller
                     name="email"
@@ -156,7 +142,6 @@ const onSubmit: SubmitHandler<FormData> = async (data) => {
                     )}
                   />
                 </Grid>
-
                 <Grid item xs={12} sm={6}>
                   <Controller
                     name="phone"
@@ -176,7 +161,6 @@ const onSubmit: SubmitHandler<FormData> = async (data) => {
               </Grid>
             </motion.div>
           )}
-
           {activeStep === 1 && (
             <motion.div
               key="step2"
@@ -206,7 +190,6 @@ const onSubmit: SubmitHandler<FormData> = async (data) => {
           )}
         </AnimatePresence>
 
-        {/* Navigation buttons */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
           {activeStep > 0 ? (
             <Button onClick={prevStep} variant="outlined">
@@ -215,7 +198,6 @@ const onSubmit: SubmitHandler<FormData> = async (data) => {
           ) : (
             <Box />
           )}
-
           {activeStep < STEPS.length - 1 ? (
             <Button onClick={nextStep} variant="contained">
               Next
@@ -231,14 +213,13 @@ const onSubmit: SubmitHandler<FormData> = async (data) => {
             </Button>
           )}
         </Box>
-      </Box>
 
-      {/* Show any form-wide errors */}
-      {Object.keys(errors).length > 0 && (
-        <Alert severity="error" sx={{ mt: 3 }}>
-          Please fix the highlighted fields above.
-        </Alert>
-      )}
+        {Object.keys(errors).length > 0 && (
+          <Alert severity="error" sx={{ mt: 3 }}>
+            Please fix the highlighted fields above.
+          </Alert>
+        )}
+      </Box>
     </Paper>
   )
 }

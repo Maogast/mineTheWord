@@ -1,14 +1,15 @@
 // next.config.js
 const path = require('path')
 
-/** @type {import('next').NextConfig} **/
+/** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
   swcMinify: true,
-  transpilePackages: ['undici'],
+
+  // needed so Next can transpile framer-motion’s "export *"
+  transpilePackages: ['framer-motion'],
 
   webpack(config) {
-    // Teach webpack that "~/" is your "src" folder
     config.resolve.alias['~'] = path.resolve(__dirname, 'src')
     return config
   },

@@ -1,73 +1,21 @@
-'use client'
+import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
+import { createMetadata } from '~/lib/metadata'
 
-import Navbar from '~/components/Navbar'
-import { Box, Container, Typography, Grid, Paper } from '@mui/material'
-import { motion } from 'framer-motion'
+// ① Metadata
+export const metadata: Metadata = createMetadata({
+  title: 'History',
+  description:
+    'Trace the journey of Mine the Word Academy from its founding in 2015 through key milestones to today.',
+  path: '/history',
+  image: '/og/history.png',
+})
 
-const milestones = [
-  { year: '2015', event: 'Founded by Pastor Stephen Magare.' },
-  { year: '2017', event: 'First online Bible course launched.' },
-  { year: '2019', event: 'Global translation initiative began.' },
-  { year: '2021', event: 'Community hubs established.' },
-  { year: '2023', event: 'Digital library reached 10k resources.' },
-  { year: '2025', event: 'Revamped site with new vision.' },
-]
+// ② Dynamic client import
+const HistoryContent = dynamic(() => import('~/components/HistoryContent'), {
+  ssr: false,
+})
 
 export default function HistoryPage() {
-  return (
-    <>
-      <Navbar />
-
-      {/* Hero */}
-      <Box
-        component={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        sx={{
-          height: 300,
-          backgroundColor: 'warning.main',
-          color: 'warning.contrastText',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center',
-          p: 2,
-        }}
-      >
-        <Typography variant="h2">Our Story</Typography>
-      </Box>
-
-      {/* Timeline */}
-      <Container sx={{ py: 6 }}>
-        {milestones.map((m, idx) => {
-          const isLeft = idx % 2 === 0
-          return (
-            <Grid
-              container
-              spacing={2}
-              key={idx}
-              sx={{ mb: 4, alignItems: 'center' }}
-            >
-              <Grid item xs={12} md={6} order={{ xs: 2, md: isLeft ? 1 : 2 }}>
-                <Paper
-                  component={motion.div}
-                  initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.2 }}
-                  sx={{ p: 3 }}
-                >
-                  <Typography variant="h6">{m.year}</Typography>
-                  <Typography>{m.event}</Typography>
-                </Paper>
-              </Grid>
-              <Grid item xs={12} md={6} order={{ xs: 1, md: isLeft ? 2 : 1 }}>
-                {/* Empty spacer for alignment */}
-              </Grid>
-            </Grid>
-          )
-        })}
-      </Container>
-    </>
-  )
+  return <HistoryContent />
 }
